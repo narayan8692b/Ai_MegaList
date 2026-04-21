@@ -18,6 +18,9 @@
 		A1B2C3D4E5F60038A2B3C4D5 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60028A2B3C4D5 /* ScannerView.swift */; };
 		A1B2C3D4E5F60039A2B3C4D5 /* CurrencySelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60029A2B3C4D5 /* CurrencySelectorView.swift */; };
 		A1B2C3D4E5F6003AA2B3C4D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6002BA2B3C4D5 /* Assets.xcassets */; };
+		A1B2C3D4E5F6003BA2B3C4D5 /* ConverterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6002CA2B3C4D5 /* ConverterView.swift */; };
+		A1B2C3D4E5F6003CA2B3C4D5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6002DA2B3C4D5 /* SettingsView.swift */; };
+		A1B2C3D4E5F6003DA2B3C4D5 /* ConverterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6002EA2B3C4D5 /* ConverterViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +37,9 @@
 		A1B2C3D4E5F60029A2B3C4D5 /* CurrencySelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencySelectorView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6002AA2B3C4D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1B2C3D4E5F6002BA2B3C4D5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A1B2C3D4E5F6002CA2B3C4D5 /* ConverterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConverterView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6002DA2B3C4D5 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6002EA2B3C4D5 /* ConverterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConverterViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				A1B2C3D4E5F60026A2B3C4D5 /* ScannerViewModel.swift */,
+				A1B2C3D4E5F6002EA2B3C4D5 /* ConverterViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -110,6 +117,8 @@
 				A1B2C3D4E5F60027A2B3C4D5 /* CameraPreviewView.swift */,
 				A1B2C3D4E5F60028A2B3C4D5 /* ScannerView.swift */,
 				A1B2C3D4E5F60029A2B3C4D5 /* CurrencySelectorView.swift */,
+				A1B2C3D4E5F6002CA2B3C4D5 /* ConverterView.swift */,
+				A1B2C3D4E5F6002DA2B3C4D5 /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -193,6 +202,9 @@
 				A1B2C3D4E5F60037A2B3C4D5 /* CameraPreviewView.swift in Sources */,
 				A1B2C3D4E5F60038A2B3C4D5 /* ScannerView.swift in Sources */,
 				A1B2C3D4E5F60039A2B3C4D5 /* CurrencySelectorView.swift in Sources */,
+				A1B2C3D4E5F6003BA2B3C4D5 /* ConverterView.swift in Sources */,
+				A1B2C3D4E5F6003CA2B3C4D5 /* SettingsView.swift in Sources */,
+				A1B2C3D4E5F6003DA2B3C4D5 /* ConverterViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

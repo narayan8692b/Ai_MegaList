@@ -32,6 +32,10 @@ final class ExchangeRateService: ObservableObject {
         return (amount / fromRate) * toRate
     }
 
+    func refresh() async {
+        await fetchRates()
+    }
+
     // MARK: - Private
 
     @MainActor
