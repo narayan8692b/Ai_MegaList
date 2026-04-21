@@ -214,7 +214,7 @@ struct StampDetailView: View {
     // MARK: Helpers
 
     private var valueDisplay: String {
-        StampStore.currencyFormatter.string(from: NSNumber(value: stamp.estimatedValue))
+        CurrencyFormatter.usd.string(from: NSNumber(value: stamp.estimatedValue))
             ?? "$\(Int(stamp.estimatedValue))"
     }
 

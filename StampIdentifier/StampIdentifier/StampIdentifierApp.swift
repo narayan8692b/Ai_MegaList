@@ -2,12 +2,14 @@ import SwiftUI
 
 @main
 struct StampIdentifierApp: App {
-    @StateObject private var store = StampStore()
+    @StateObject private var stampStore = StampStore()
+    @StateObject private var antiqueStore = AntiqueStore()
 
     var body: some Scene {
         WindowGroup {
             RootTabView()
-                .environmentObject(store)
+                .environmentObject(stampStore)
+                .environmentObject(antiqueStore)
                 .preferredColorScheme(.light)
         }
     }

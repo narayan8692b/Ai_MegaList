@@ -1,18 +1,28 @@
 import SwiftUI
 
 struct LearnView: View {
-    private let topics: [LearnTopic] = LearnTopic.allTopics
+    @AppStorage("selectedMode") private var storedMode: String = CollectibleMode.stamp.rawValue
+
+    private var mode: CollectibleMode {
+        CollectibleMode(rawValue: storedMode) ?? .stamp
+    }
+
+    private var topics: [LearnTopic] {
+        mode == .stamp ? LearnTopic.stampTopics : LearnTopic.antiqueTopics
+    }
 
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.brandCream.ignoresSafeArea()
+                (mode == .stamp ? Color.brandCream : Color.antiqueCream)
+                    .ignoresSafeArea()
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
+                        modeSwitcher
                         header
                         ForEach(topics) { topic in
                             NavigationLink {
-                                LearnDetailView(topic: topic)
+                                LearnDetailView(topic: topic, accent: mode.accentColor)
                             } label: {
                                 topicCard(topic)
                             }
@@ -27,12 +37,23 @@ struct LearnView: View {
         }
     }
 
+    private var modeSwitcher: some View {
+        Picker("Mode", selection: $storedMode) {
+            ForEach(CollectibleMode.allCases) { m in
+                Text(m.rawValue).tag(m.rawValue)
+            }
+        }
+        .pickerStyle(.segmented)
+    }
+
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Everything About Stamps")
+            Text(mode == .stamp ? "Everything About Stamps" : "Everything About Antiques")
                 .font(.system(.title2, design: .rounded, weight: .bold))
                 .foregroundStyle(Color.brandInk)
-            Text("Short guides to help you identify, grade, and value any stamp.")
+            Text(mode == .stamp
+                 ? "Short guides to help you identify, grade, and value any stamp."
+                 : "Short guides to help you identify, date, and value vintage items.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -42,10 +63,10 @@ struct LearnView: View {
         HStack(spacing: 14) {
             ZStack {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(Color.brandOrange.opacity(0.15))
+                    .fill(mode.accentColor.opacity(0.15))
                 Image(systemName: topic.systemImage)
                     .font(.title3)
-                    .foregroundStyle(Color.brandOrange)
+                    .foregroundStyle(mode.accentColor)
             }
             .frame(width: 48, height: 48)
 
@@ -78,7 +99,7 @@ struct LearnTopic: Identifiable, Hashable {
     let systemImage: String
     let body: String
 
-    static let allTopics: [LearnTopic] = [
+    static let stampTopics: [LearnTopic] = [
         LearnTopic(
             title: "Catalog Numbers",
             subtitle: "How Stanley Gibbons, Scott, Michel, and Yvert classify stamps.",
@@ -110,10 +131,50 @@ struct LearnTopic: Identifiable, Hashable {
             body: "For high-value stamps, a certificate from a recognized expert body (RPSL, PF, BPA) reassures buyers. Major auction houses specialize in philately and often achieve the strongest prices for rarities."
         )
     ]
+
+    static let antiqueTopics: [LearnTopic] = [
+        LearnTopic(
+            title: "Dating & Age",
+            subtitle: "Period, circa, and age-dating clues.",
+            systemImage: "clock",
+            body: "Dating relies on style, construction, materials, and provenance. 'Circa' (c.) indicates an approximate decade; 'period' denotes a named era (Georgian, Victorian, Art Nouveau, Art Deco). Hardware, joinery, and wear patterns are often more reliable than style alone."
+        ),
+        LearnTopic(
+            title: "Origin & Provenance",
+            subtitle: "Tracing an item's country, maker, and history of ownership.",
+            systemImage: "mappin.and.ellipse",
+            body: "Provenance is the documented history of ownership. A clear chain of ownership — receipts, estate records, auction lots — significantly affects value. Marks, stamps, and signatures help attribute an item to a country or maker."
+        ),
+        LearnTopic(
+            title: "Materials & Construction",
+            subtitle: "Wood, metal, ceramic, glass, and their tells.",
+            systemImage: "wrench.and.screwdriver",
+            body: "Hand-cut dovetails, cast-iron hardware, slip-trailed enamels, mouth-blown glass — construction techniques reveal both era and regional origin. Reproductions often reveal themselves through machine uniformity or modern adhesives."
+        ),
+        LearnTopic(
+            title: "Condition Grading",
+            subtitle: "How restoration, wear, and faults affect value.",
+            systemImage: "checkmark.seal",
+            body: "Most categories use grades from Mint / Excellent down to Fair / Poor. Original surfaces, finishes, and patinas are preferred. Sympathetic conservation is acceptable; heavy restoration usually reduces value."
+        ),
+        LearnTopic(
+            title: "Authenticity",
+            subtitle: "Marks, materials, and expert opinions.",
+            systemImage: "checkmark.shield",
+            body: "Look for maker's marks, hallmarks, and signatures. Materials should be consistent with the attributed date. For high-value items, seek an expert opinion from an auction specialist or recognised appraiser before purchase or sale."
+        ),
+        LearnTopic(
+            title: "Valuation & Selling",
+            subtitle: "Fair market value vs retail replacement.",
+            systemImage: "dollarsign.circle",
+            body: "Fair Market Value (FMV) is what a willing buyer pays in an open market. Replacement value is higher — typically used for insurance. Compare recent auction results in the same category for the most realistic estimate."
+        )
+    ]
 }
 
 struct LearnDetailView: View {
     let topic: LearnTopic
+    var accent: Color = .brandOrange
 
     var body: some View {
         ScrollView {
@@ -121,7 +182,7 @@ struct LearnDetailView: View {
                 HStack(spacing: 12) {
                     Image(systemName: topic.systemImage)
                         .font(.title)
-                        .foregroundStyle(Color.brandOrange)
+                        .foregroundStyle(accent)
                     Text(topic.title)
                         .font(.system(.title2, design: .rounded, weight: .bold))
                         .foregroundStyle(Color.brandInk)

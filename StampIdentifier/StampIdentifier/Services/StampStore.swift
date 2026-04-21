@@ -24,7 +24,7 @@ final class StampStore: ObservableObject {
     }
 
     var formattedTotalValue: String {
-        Self.currencyFormatter.string(from: NSNumber(value: totalValue)) ?? "$0"
+        CurrencyFormatter.usd.string(from: NSNumber(value: totalValue)) ?? "$0"
     }
 
     func add(_ stamp: Stamp) {
@@ -66,11 +66,4 @@ final class StampStore: ObservableObject {
         }
     }
 
-    static let currencyFormatter: NumberFormatter = {
-        let f = NumberFormatter()
-        f.numberStyle = .currency
-        f.currencyCode = "USD"
-        f.maximumFractionDigits = 0
-        return f
-    }()
 }

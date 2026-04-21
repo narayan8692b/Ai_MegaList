@@ -2,24 +2,35 @@ import SwiftUI
 import PhotosUI
 
 struct ScanView: View {
-    @EnvironmentObject private var store: StampStore
+    @EnvironmentObject private var stampStore: StampStore
+    @EnvironmentObject private var antiqueStore: AntiqueStore
+    @AppStorage("selectedMode") private var storedMode: String = CollectibleMode.stamp.rawValue
+    @AppStorage("preferredLanguageCode") private var languageCode: String = "EN"
 
     @State private var pickerItem: PhotosPickerItem?
     @State private var capturedImage: UIImage?
     @State private var isCameraPresented = false
     @State private var isIdentifying = false
     @State private var identifiedStamp: Stamp?
+    @State private var identifiedAntique: Antique?
     @State private var errorMessage: String?
+    @State private var showLanguagePicker = false
 
-    private let identifier: StampIdentifying = MockStampIdentificationService()
+    private let stampIdentifier: StampIdentifying = MockStampIdentificationService()
+    private let antiqueIdentifier: AntiqueIdentifying = MockAntiqueIdentificationService()
+
+    private var mode: CollectibleMode {
+        get { CollectibleMode(rawValue: storedMode) ?? .stamp }
+    }
 
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.brandCream.ignoresSafeArea()
+                backgroundColor.ignoresSafeArea()
 
                 ScrollView {
-                    VStack(spacing: 24) {
+                    VStack(spacing: 22) {
+                        modeAndLanguageBar
                         header
                         scannerCard
                         actionButtons
@@ -31,13 +42,17 @@ struct ScanView: View {
                         }
                         tipsSection
                     }
-                    .padding(.vertical, 24)
+                    .padding(.vertical, 20)
                 }
             }
-            .navigationTitle("Stamp Identifier")
+            .navigationTitle(navTitle)
             .navigationBarTitleDisplayMode(.inline)
             .onChange(of: pickerItem) { _, newValue in
                 Task { await loadPickedImage(newValue) }
+            }
+            .onChange(of: storedMode) { _, _ in
+                capturedImage = nil
+                errorMessage = nil
             }
             .sheet(isPresented: $isCameraPresented) {
                 CameraPicker { image in
@@ -46,21 +61,68 @@ struct ScanView: View {
                 }
                 .ignoresSafeArea()
             }
+            .sheet(isPresented: $showLanguagePicker) {
+                LanguagePickerView()
+            }
             .navigationDestination(item: $identifiedStamp) { stamp in
                 StampDetailView(stamp: stamp, showsAddButton: true)
+            }
+            .navigationDestination(item: $identifiedAntique) { antique in
+                AntiqueDetailView(antique: antique, showsAddButton: true)
             }
         }
     }
 
     // MARK: Subviews
 
+    private var backgroundColor: Color {
+        mode == .stamp ? .brandCream : .antiqueCream
+    }
+
+    private var navTitle: String {
+        mode == .stamp ? "Stamp Identifier" : "Antique Identifier"
+    }
+
+    private var modeAndLanguageBar: some View {
+        HStack(spacing: 10) {
+            Picker("Mode", selection: $storedMode) {
+                ForEach(CollectibleMode.allCases) { m in
+                    Text(m.rawValue).tag(m.rawValue)
+                }
+            }
+            .pickerStyle(.segmented)
+
+            Button {
+                showLanguagePicker = true
+            } label: {
+                HStack(spacing: 6) {
+                    Text(SupportedLanguage.named(languageCode).flag)
+                    Text(languageCode)
+                        .font(.caption.weight(.bold))
+                    Image(systemName: "chevron.down")
+                        .font(.caption2)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 7)
+                .background(
+                    Capsule().fill(Color.white)
+                        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 1)
+                )
+                .foregroundStyle(Color.brandInk)
+            }
+        }
+        .padding(.horizontal)
+    }
+
     private var header: some View {
         VStack(spacing: 8) {
-            Text("Scan & Identify Any Stamp")
+            Text(mode == .stamp ? "Scan & Identify Any Stamp" : "Accurate Antique Scanner")
                 .font(.system(size: 28, weight: .bold, design: .rounded))
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Color.brandInk)
-            Text("Point your camera at a stamp or pick one from your library.")
+            Text(mode == .stamp
+                 ? "Point your camera at a stamp or pick one from your library."
+                 : "Scan any antique, vintage, or collectible item for an instant appraisal.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -75,16 +137,13 @@ struct ScanView: View {
                 .shadow(color: .black.opacity(0.06), radius: 14, x: 0, y: 6)
 
             if let image = capturedImage {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .padding(28)
+                Image(uiImage: image).resizable().scaledToFit().padding(28)
             } else {
-                ScannerFrame()
+                ScannerFrame(color: mode.accentColor)
                     .overlay {
-                        Image(systemName: "camera.viewfinder")
+                        Image(systemName: mode == .stamp ? "camera.viewfinder" : "sparkles.tv")
                             .font(.system(size: 56, weight: .light))
-                            .foregroundStyle(Color.brandOrange.opacity(0.75))
+                            .foregroundStyle(mode.accentColor.opacity(0.75))
                     }
                     .padding(28)
             }
@@ -93,10 +152,8 @@ struct ScanView: View {
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
                     .fill(Color.black.opacity(0.35))
                 VStack(spacing: 12) {
-                    ProgressView()
-                        .tint(.white)
-                        .scaleEffect(1.3)
-                    Text("Identifying stamp…")
+                    ProgressView().tint(.white).scaleEffect(1.3)
+                    Text(mode == .stamp ? "Identifying stamp…" : "Identifying antique…")
                         .foregroundStyle(.white)
                         .font(.headline)
                 }
@@ -117,7 +174,7 @@ struct ScanView: View {
                     .padding(.vertical, 14)
             }
             .buttonStyle(.borderedProminent)
-            .tint(Color.brandOrange)
+            .tint(mode.accentColor)
             .controlSize(.large)
 
             PhotosPicker(selection: $pickerItem, matching: .images) {
@@ -127,7 +184,7 @@ struct ScanView: View {
                     .padding(.vertical, 14)
             }
             .buttonStyle(.bordered)
-            .tint(Color.brandOrange)
+            .tint(mode.accentColor)
             .controlSize(.large)
         }
         .padding(.horizontal)
@@ -139,8 +196,12 @@ struct ScanView: View {
             Text("Tips for accurate results")
                 .font(.headline)
                 .foregroundStyle(Color.brandInk)
-            tip("Place the stamp on a plain, well-lit surface.")
-            tip("Fill the frame, keeping the stamp parallel to the camera.")
+            tip(mode == .stamp
+                ? "Place the stamp on a plain, well-lit surface."
+                : "Photograph the antique against a neutral backdrop.")
+            tip(mode == .stamp
+                ? "Fill the frame, keeping the stamp parallel to the camera."
+                : "Capture key details: marks, signatures, construction.")
             tip("Avoid glare — natural daylight works best.")
         }
         .padding()
@@ -154,7 +215,7 @@ struct ScanView: View {
     private func tip(_ text: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             Image(systemName: "checkmark.seal.fill")
-                .foregroundStyle(Color.brandOrange)
+                .foregroundStyle(mode.accentColor)
             Text(text)
                 .foregroundStyle(.secondary)
         }
@@ -181,8 +242,12 @@ struct ScanView: View {
         isIdentifying = true
         defer { isIdentifying = false }
         do {
-            let stamp = try await identifier.identify(image: image)
-            identifiedStamp = stamp
+            switch mode {
+            case .stamp:
+                identifiedStamp = try await stampIdentifier.identify(image: image)
+            case .antique:
+                identifiedAntique = try await antiqueIdentifier.identify(image: image)
+            }
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -190,13 +255,14 @@ struct ScanView: View {
 }
 
 private struct ScannerFrame: View {
+    var color: Color = .brandOrange
+
     var body: some View {
         GeometryReader { proxy in
             let w = proxy.size.width
             let h = proxy.size.height
             let corner: CGFloat = 34
             let thickness: CGFloat = 5
-            let color = Color.brandOrange
 
             ZStack {
                 Path { p in
@@ -228,5 +294,7 @@ private struct ScannerFrame: View {
 }
 
 #Preview {
-    ScanView().environmentObject(StampStore())
+    ScanView()
+        .environmentObject(StampStore())
+        .environmentObject(AntiqueStore())
 }
