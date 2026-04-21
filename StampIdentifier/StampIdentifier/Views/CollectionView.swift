@@ -1,8 +1,11 @@
 import SwiftUI
 
 struct CollectionView: View {
-    @EnvironmentObject private var stampStore: StampStore
+    @EnvironmentObject private var stampStore:   StampStore
     @EnvironmentObject private var antiqueStore: AntiqueStore
+    @EnvironmentObject private var jewelryStore: JewelryStore
+    @EnvironmentObject private var coinStore:    CoinStore
+
     @AppStorage("selectedMode") private var storedMode: String = CollectibleMode.stamp.rawValue
     @State private var searchText = ""
 
@@ -18,13 +21,12 @@ struct CollectionView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                (mode == .stamp ? Color.brandCream : Color.antiqueCream)
-                    .ignoresSafeArea()
+                mode.backgroundColor.ignoresSafeArea()
 
                 ScrollView {
                     VStack(spacing: 16) {
-                        modeSwitcher
-                        summaryCard
+                        ModeChipPicker(selection: $storedMode)
+                        totalsCard
                         if isEmpty {
                             emptyState
                         } else {
@@ -35,41 +37,70 @@ struct CollectionView: View {
                 }
             }
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
-            .navigationTitle(mode == .stamp ? "Collection" : "Identification History")
+            .navigationTitle(title)
             .navigationBarTitleDisplayMode(.large)
-            .navigationDestination(for: Stamp.self) { stamp in
-                StampDetailView(stamp: stamp)
-            }
-            .navigationDestination(for: Antique.self) { antique in
-                AntiqueDetailView(antique: antique)
-            }
+            .toolbarColorScheme(mode == .coin ? .dark : .light, for: .navigationBar)
+            .navigationDestination(for: Stamp.self)   { stamp in   StampDetailView(stamp: stamp) }
+            .navigationDestination(for: Antique.self) { antique in AntiqueDetailView(antique: antique) }
+            .navigationDestination(for: Jewelry.self) { piece in   JewelryDetailView(piece: piece) }
+            .navigationDestination(for: Coin.self)    { coin in    CoinDetailView(coin: coin) }
         }
     }
 
     // MARK: Subviews
 
-    private var modeSwitcher: some View {
-        Picker("Mode", selection: $storedMode) {
-            ForEach(CollectibleMode.allCases) { m in
-                Text(m.rawValue).tag(m.rawValue)
+    private var title: String {
+        switch mode {
+        case .stamp:   return "Collection"
+        case .antique: return "Identification History"
+        case .jewelry: return "Jewelry"
+        case .coin:    return "Coins"
+        }
+    }
+
+    private var totalsCard: some View {
+        Group {
+            if mode == .jewelry {
+                bigValuePill
+            } else {
+                dualTiles
             }
         }
-        .pickerStyle(.segmented)
         .padding(.horizontal)
     }
 
-    private var summaryCard: some View {
-        HStack(spacing: 12) {
-            summaryTile(
-                title: "Total Items",
-                value: "\(currentCount)",
-                icon: "square.stack.fill")
-            summaryTile(
-                title: "Total Value",
-                value: currentFormattedValue,
-                icon: "dollarsign.circle.fill")
+    private var bigValuePill: some View {
+        VStack(spacing: 6) {
+            Text(currentFormattedValue)
+                .font(.system(size: 48, weight: .heavy, design: .rounded))
+                .foregroundStyle(Color.brandInk)
+            Text("\(currentCount) pieces tracked")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
         }
-        .padding(.horizontal)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 22)
+        .padding(.horizontal, 16)
+        .background(
+            Capsule(style: .continuous)
+                .fill(Color.white)
+                .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 6)
+        )
+        .overlay(
+            Capsule(style: .continuous)
+                .strokeBorder(Color.jewelryGold.opacity(0.35), lineWidth: 2)
+        )
+    }
+
+    private var dualTiles: some View {
+        HStack(spacing: 12) {
+            summaryTile(title: "Total Items",
+                        value: "\(currentCount)",
+                        icon: "square.stack.fill")
+            summaryTile(title: "Total Value",
+                        value: currentFormattedValue,
+                        icon: "dollarsign.circle.fill")
+        }
     }
 
     private func summaryTile(title: String, value: String, icon: String) -> some View {
@@ -90,8 +121,7 @@ struct CollectionView: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(
                     LinearGradient(
-                        colors: [mode.accentColor,
-                                 mode.accentColor.opacity(0.75)],
+                        colors: [mode.accentColor, mode.accentColor.opacity(0.75)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
@@ -110,10 +140,8 @@ struct CollectionView: View {
                     }
                     .buttonStyle(.plain)
                     .contextMenu {
-                        Button(role: .destructive) {
-                            stampStore.remove(stamp)
-                        } label: {
-                            Label("Remove from Collection", systemImage: "trash")
+                        Button(role: .destructive) { stampStore.remove(stamp) } label: {
+                            Label("Remove", systemImage: "trash")
                         }
                     }
                 }
@@ -127,10 +155,38 @@ struct CollectionView: View {
                     }
                     .buttonStyle(.plain)
                     .contextMenu {
-                        Button(role: .destructive) {
-                            antiqueStore.remove(antique)
-                        } label: {
-                            Label("Remove from Collection", systemImage: "trash")
+                        Button(role: .destructive) { antiqueStore.remove(antique) } label: {
+                            Label("Remove", systemImage: "trash")
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal)
+        case .jewelry:
+            LazyVGrid(columns: columns, spacing: 14) {
+                ForEach(filteredJewelry) { piece in
+                    NavigationLink(value: piece) {
+                        JewelryCardView(piece: piece)
+                    }
+                    .buttonStyle(.plain)
+                    .contextMenu {
+                        Button(role: .destructive) { jewelryStore.remove(piece) } label: {
+                            Label("Remove", systemImage: "trash")
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal)
+        case .coin:
+            LazyVGrid(columns: columns, spacing: 14) {
+                ForEach(filteredCoins) { coin in
+                    NavigationLink(value: coin) {
+                        CoinCardView(coin: coin)
+                    }
+                    .buttonStyle(.plain)
+                    .contextMenu {
+                        Button(role: .destructive) { coinStore.remove(coin) } label: {
+                            Label("Remove", systemImage: "trash")
                         }
                     }
                 }
@@ -144,23 +200,26 @@ struct CollectionView: View {
             Image(systemName: "tray")
                 .font(.system(size: 52, weight: .light))
                 .foregroundStyle(mode.accentColor)
-            Text(searchText.isEmpty
-                 ? (mode == .stamp
-                    ? "Your stamp collection is empty."
-                    : "Your antique history is empty.")
-                 : "No items match “\(searchText)”.")
+            Text(searchText.isEmpty ? emptyTitle : "No items match “\(searchText)”.")
                 .font(.headline)
-                .foregroundStyle(Color.brandInk)
+                .foregroundStyle(mode == .coin ? .white : Color.brandInk)
             if searchText.isEmpty {
-                Text(mode == .stamp
-                     ? "Scan a stamp to add your first entry."
-                     : "Scan an antique to start your history.")
+                Text("Scan a \(mode.singular.lowercased()) to add your first entry.")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(mode == .coin ? Color.white.opacity(0.65) : .secondary)
             }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 50)
+    }
+
+    private var emptyTitle: String {
+        switch mode {
+        case .stamp:   return "Your stamp collection is empty."
+        case .antique: return "Your antique history is empty."
+        case .jewelry: return "Your jewelry collection is empty."
+        case .coin:    return "Your coin history is empty."
+        }
     }
 
     // MARK: Data helpers
@@ -169,6 +228,8 @@ struct CollectionView: View {
         switch mode {
         case .stamp:   return filteredStamps.isEmpty
         case .antique: return filteredAntiques.isEmpty
+        case .jewelry: return filteredJewelry.isEmpty
+        case .coin:    return filteredCoins.isEmpty
         }
     }
 
@@ -176,6 +237,8 @@ struct CollectionView: View {
         switch mode {
         case .stamp:   return stampStore.totalCount
         case .antique: return antiqueStore.totalCount
+        case .jewelry: return jewelryStore.totalCount
+        case .coin:    return coinStore.totalCount
         }
     }
 
@@ -183,6 +246,8 @@ struct CollectionView: View {
         switch mode {
         case .stamp:   return stampStore.formattedTotalValue
         case .antique: return antiqueStore.formattedTotalValue
+        case .jewelry: return jewelryStore.formattedTotalValue
+        case .coin:    return coinStore.formattedTotalValue
         }
     }
 
@@ -208,10 +273,35 @@ struct CollectionView: View {
             $0.style.lowercased().contains(q)
         }
     }
+
+    private var filteredJewelry: [Jewelry] {
+        let base = jewelryStore.pieces
+        guard !searchText.isEmpty else { return base }
+        let q = searchText.lowercased()
+        return base.filter {
+            $0.name.lowercased().contains(q) ||
+            $0.shortTitle.lowercased().contains(q) ||
+            $0.type.rawValue.lowercased().contains(q)
+        }
+    }
+
+    private var filteredCoins: [Coin] {
+        let base = coinStore.coins
+        guard !searchText.isEmpty else { return base }
+        let q = searchText.lowercased()
+        return base.filter {
+            $0.name.lowercased().contains(q) ||
+            $0.shortTitle.lowercased().contains(q) ||
+            $0.country.lowercased().contains(q) ||
+            $0.denomination.lowercased().contains(q)
+        }
+    }
 }
 
 #Preview {
     CollectionView()
         .environmentObject(StampStore())
         .environmentObject(AntiqueStore())
+        .environmentObject(JewelryStore())
+        .environmentObject(CoinStore())
 }

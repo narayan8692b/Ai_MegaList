@@ -8,55 +8,68 @@ struct LearnView: View {
     }
 
     private var topics: [LearnTopic] {
-        mode == .stamp ? LearnTopic.stampTopics : LearnTopic.antiqueTopics
+        switch mode {
+        case .stamp:   return LearnTopic.stampTopics
+        case .antique: return LearnTopic.antiqueTopics
+        case .jewelry: return LearnTopic.jewelryTopics
+        case .coin:    return LearnTopic.coinTopics
+        }
     }
 
     var body: some View {
         NavigationStack {
             ZStack {
-                (mode == .stamp ? Color.brandCream : Color.antiqueCream)
-                    .ignoresSafeArea()
+                mode.backgroundColor.ignoresSafeArea()
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
-                        modeSwitcher
+                        ModeChipPicker(selection: $storedMode)
                         header
-                        ForEach(topics) { topic in
-                            NavigationLink {
-                                LearnDetailView(topic: topic, accent: mode.accentColor)
-                            } label: {
-                                topicCard(topic)
+                            .padding(.horizontal, 16)
+                        VStack(spacing: 12) {
+                            ForEach(topics) { topic in
+                                NavigationLink {
+                                    LearnDetailView(topic: topic, accent: mode.accentColor,
+                                                    background: mode.backgroundColor,
+                                                    textColor: mode == .coin ? .white : Color.brandInk)
+                                } label: {
+                                    topicCard(topic)
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
                         }
+                        .padding(.horizontal, 16)
                     }
-                    .padding(16)
+                    .padding(.vertical, 16)
                 }
             }
             .navigationTitle("Learn")
             .navigationBarTitleDisplayMode(.large)
+            .toolbarColorScheme(mode == .coin ? .dark : .light, for: .navigationBar)
         }
-    }
-
-    private var modeSwitcher: some View {
-        Picker("Mode", selection: $storedMode) {
-            ForEach(CollectibleMode.allCases) { m in
-                Text(m.rawValue).tag(m.rawValue)
-            }
-        }
-        .pickerStyle(.segmented)
     }
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(mode == .stamp ? "Everything About Stamps" : "Everything About Antiques")
+            Text(headerTitle)
                 .font(.system(.title2, design: .rounded, weight: .bold))
-                .foregroundStyle(Color.brandInk)
-            Text(mode == .stamp
-                 ? "Short guides to help you identify, grade, and value any stamp."
-                 : "Short guides to help you identify, date, and value vintage items.")
+                .foregroundStyle(mode == .coin ? .white : Color.brandInk)
+            Text(headerSubtitle)
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(mode == .coin ? Color.white.opacity(0.7) : .secondary)
         }
+    }
+
+    private var headerTitle: String {
+        switch mode {
+        case .stamp:   return "Everything About Stamps"
+        case .antique: return "Everything About Antiques"
+        case .jewelry: return "Everything About Jewelry"
+        case .coin:    return "Everything About Coins"
+        }
+    }
+
+    private var headerSubtitle: String {
+        "Short guides to help you identify, grade, and value any \(mode.singular.lowercased())."
     }
 
     private func topicCard(_ topic: LearnTopic) -> some View {
@@ -170,11 +183,91 @@ struct LearnTopic: Identifiable, Hashable {
             body: "Fair Market Value (FMV) is what a willing buyer pays in an open market. Replacement value is higher — typically used for insurance. Compare recent auction results in the same category for the most realistic estimate."
         )
     ]
+
+    static let jewelryTopics: [LearnTopic] = [
+        LearnTopic(
+            title: "Metal Karats & Purity",
+            subtitle: "10K, 14K, 18K, 22K, 24K — what the stamps mean.",
+            systemImage: "circle.grid.cross",
+            body: "Karat indicates gold purity out of 24. 14K = 58.5% gold (stamped 585); 18K = 75% (750); 22K = 91.6% (916); 24K = pure. Silver is typically 925 (sterling). Platinum is 950 (PT950). Stamps are usually inside rings or on clasps."
+        ),
+        LearnTopic(
+            title: "Gemstone Grading",
+            subtitle: "The four Cs for diamonds — and what applies to colored stones.",
+            systemImage: "diamond",
+            body: "Diamonds are graded on Carat, Clarity (VVS-I), Color (D-Z), and Cut. Colored stones weigh carat and color saturation most heavily. Lab-grown diamonds are chemically identical but carry a lower market premium."
+        ),
+        LearnTopic(
+            title: "Hallmarks & Maker's Marks",
+            subtitle: "How to read a ring's interior.",
+            systemImage: "signature",
+            body: "Inside most rings you'll find a purity mark (e.g. 750) plus a maker's mark or trademark. British, French, Italian, and Russian hallmarking systems each use distinct symbols — country marks, date letters, and assay-office stamps."
+        ),
+        LearnTopic(
+            title: "Condition & Restoration",
+            subtitle: "Rhodium plating, prong retipping, stone loss.",
+            systemImage: "checkmark.seal",
+            body: "Small restorations (polishing, retipping prongs, rhodium plating on white gold) are normal and don't reduce value materially. Heavy restoration, stone replacement, or modern shank additions to antique pieces do reduce value."
+        ),
+        LearnTopic(
+            title: "Selling & Market Channels",
+            subtitle: "Dealers vs. auction vs. online resale.",
+            systemImage: "cart",
+            body: "Dealers offer fastest liquidity at 40-60% of retail. Auction can achieve stronger prices for rare / signed pieces but takes months and involves seller's premium. Online platforms (eBay, 1stDibs, Etsy) hit the broadest buyer pool."
+        ),
+        LearnTopic(
+            title: "Insurance & Appraisals",
+            subtitle: "Replacement value vs fair market value.",
+            systemImage: "shield",
+            body: "Insurance appraisals are typically retail replacement value. Estate / donation appraisals use fair market value. Keep a dated appraisal on file with photos; update every 3-5 years as metal and stone markets shift."
+        )
+    ]
+
+    static let coinTopics: [LearnTopic] = [
+        LearnTopic(
+            title: "Historical Context",
+            subtitle: "Place a coin in its economic and political era.",
+            systemImage: "clock.arrow.circlepath",
+            body: "Coins reflect the politics, economics, and metallurgy of their issuers. Understanding the era — rulers, wars, currency reforms — helps attribute unlisted foreign issues and explain design choices."
+        ),
+        LearnTopic(
+            title: "Technical Details",
+            subtitle: "Diameter, weight, composition, edge.",
+            systemImage: "wrench.and.screwdriver",
+            body: "Technical specs are the fastest route to attribution. Use a calliper and a 0.01g scale. Note the edge — reeded, plain, lettered, or decorated — since the same design can appear on multiple edge types, changing catalog value dramatically."
+        ),
+        LearnTopic(
+            title: "Condition & Grading",
+            subtitle: "Poor through MS-70.",
+            systemImage: "chart.bar",
+            body: "Grading scales run from P-1 (Poor) through AG, G, VG, F, VF, EF, AU, MS. MS coins are graded MS-60 through MS-70. Cleaning, whizzing, and harsh polish are detriments; original patinas are preferred."
+        ),
+        LearnTopic(
+            title: "Market & Investment",
+            subtitle: "Spot, numismatic, and condition premiums.",
+            systemImage: "chart.line.uptrend.xyaxis",
+            body: "Market value combines intrinsic (metal) value, numismatic scarcity premium, and grade premium. Bullion coins track spot; collectible coins have a higher numismatic premium that depends on rarity and preservation."
+        ),
+        LearnTopic(
+            title: "Foreign Coin Details",
+            subtitle: "Identifying issuer country from a single face.",
+            systemImage: "globe",
+            body: "Ruler portraits, language, alphabet, religious symbols, and denominations are strong clues. The Latin Monetary Union (1865-1927) harmonised weights across continental Europe — useful when attributing undated gold issues."
+        ),
+        LearnTopic(
+            title: "Authentication & Counterfeits",
+            subtitle: "Tests for metal, weight, and die characteristics.",
+            systemImage: "checkmark.shield",
+            body: "Weigh, measure, and magnify. XRF testing confirms metal composition non-destructively. Die studies identify contemporary fakes from their distinctive die marks. For valuable coins, third-party grading (PCGS, NGC) provides guaranteed authentication."
+        )
+    ]
 }
 
 struct LearnDetailView: View {
     let topic: LearnTopic
     var accent: Color = .brandOrange
+    var background: Color = .brandCream
+    var textColor: Color = .brandInk
 
     var body: some View {
         ScrollView {
@@ -185,16 +278,16 @@ struct LearnDetailView: View {
                         .foregroundStyle(accent)
                     Text(topic.title)
                         .font(.system(.title2, design: .rounded, weight: .bold))
-                        .foregroundStyle(Color.brandInk)
+                        .foregroundStyle(textColor)
                 }
                 Text(topic.body)
                     .font(.body)
-                    .foregroundStyle(Color.brandInk)
+                    .foregroundStyle(textColor)
                 Spacer(minLength: 0)
             }
             .padding()
         }
-        .background(Color.brandCream.ignoresSafeArea())
+        .background(background.ignoresSafeArea())
         .navigationTitle(topic.title)
         .navigationBarTitleDisplayMode(.inline)
     }

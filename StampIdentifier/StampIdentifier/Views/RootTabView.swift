@@ -34,4 +34,6 @@ struct RootTabView: View {
     RootTabView()
         .environmentObject(StampStore())
         .environmentObject(AntiqueStore())
+        .environmentObject(JewelryStore())
+        .environmentObject(CoinStore())
 }

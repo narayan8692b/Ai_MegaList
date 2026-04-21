@@ -2,8 +2,11 @@ import SwiftUI
 import PhotosUI
 
 struct ScanView: View {
-    @EnvironmentObject private var stampStore: StampStore
+    @EnvironmentObject private var stampStore:   StampStore
     @EnvironmentObject private var antiqueStore: AntiqueStore
+    @EnvironmentObject private var jewelryStore: JewelryStore
+    @EnvironmentObject private var coinStore:    CoinStore
+
     @AppStorage("selectedMode") private var storedMode: String = CollectibleMode.stamp.rawValue
     @AppStorage("preferredLanguageCode") private var languageCode: String = "EN"
 
@@ -11,26 +14,32 @@ struct ScanView: View {
     @State private var capturedImage: UIImage?
     @State private var isCameraPresented = false
     @State private var isIdentifying = false
-    @State private var identifiedStamp: Stamp?
+
+    @State private var identifiedStamp:   Stamp?
     @State private var identifiedAntique: Antique?
+    @State private var identifiedJewelry: Jewelry?
+    @State private var identifiedCoin:    Coin?
+
     @State private var errorMessage: String?
     @State private var showLanguagePicker = false
 
-    private let stampIdentifier: StampIdentifying = MockStampIdentificationService()
+    private let stampIdentifier:   StampIdentifying   = MockStampIdentificationService()
     private let antiqueIdentifier: AntiqueIdentifying = MockAntiqueIdentificationService()
+    private let jewelryIdentifier: JewelryIdentifying = MockJewelryIdentificationService()
+    private let coinIdentifier:    CoinIdentifying    = MockCoinIdentificationService()
 
     private var mode: CollectibleMode {
-        get { CollectibleMode(rawValue: storedMode) ?? .stamp }
+        CollectibleMode(rawValue: storedMode) ?? .stamp
     }
 
     var body: some View {
         NavigationStack {
             ZStack {
-                backgroundColor.ignoresSafeArea()
+                mode.backgroundColor.ignoresSafeArea()
 
                 ScrollView {
                     VStack(spacing: 22) {
-                        modeAndLanguageBar
+                        modeRow
                         header
                         scannerCard
                         actionButtons
@@ -47,6 +56,7 @@ struct ScanView: View {
             }
             .navigationTitle(navTitle)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarColorScheme(mode == .coin ? .dark : .light, for: .navigationBar)
             .onChange(of: pickerItem) { _, newValue in
                 Task { await loadPickedImage(newValue) }
             }
@@ -70,61 +80,85 @@ struct ScanView: View {
             .navigationDestination(item: $identifiedAntique) { antique in
                 AntiqueDetailView(antique: antique, showsAddButton: true)
             }
+            .navigationDestination(item: $identifiedJewelry) { piece in
+                JewelryDetailView(piece: piece, showsAddButton: true)
+            }
+            .navigationDestination(item: $identifiedCoin) { coin in
+                CoinDetailView(coin: coin, showsAddButton: true)
+            }
         }
     }
 
     // MARK: Subviews
 
-    private var backgroundColor: Color {
-        mode == .stamp ? .brandCream : .antiqueCream
-    }
-
     private var navTitle: String {
-        mode == .stamp ? "Stamp Identifier" : "Antique Identifier"
+        switch mode {
+        case .stamp:   return "Stamp Identifier"
+        case .antique: return "Antique Identifier"
+        case .jewelry: return "Jewelry Identifier"
+        case .coin:    return "Coin Identifier"
+        }
     }
 
-    private var modeAndLanguageBar: some View {
-        HStack(spacing: 10) {
-            Picker("Mode", selection: $storedMode) {
-                ForEach(CollectibleMode.allCases) { m in
-                    Text(m.rawValue).tag(m.rawValue)
-                }
-            }
-            .pickerStyle(.segmented)
-
-            Button {
-                showLanguagePicker = true
-            } label: {
-                HStack(spacing: 6) {
-                    Text(SupportedLanguage.named(languageCode).flag)
-                    Text(languageCode)
-                        .font(.caption.weight(.bold))
-                    Image(systemName: "chevron.down")
-                        .font(.caption2)
-                }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 7)
-                .background(
-                    Capsule().fill(Color.white)
-                        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 1)
-                )
-                .foregroundStyle(Color.brandInk)
-            }
+    private var primaryTitle: String {
+        switch mode {
+        case .stamp:   return "Scan & Identify Any Stamp"
+        case .antique: return "Accurate Antique Scanner"
+        case .jewelry: return "Instant Jewelry Appraisal"
+        case .coin:    return "Accurate Coin Scanner"
         }
-        .padding(.horizontal)
+    }
+
+    private var primarySubtitle: String {
+        switch mode {
+        case .stamp:   return "Point your camera at a stamp or pick one from your library."
+        case .antique: return "Scan any antique, vintage, or collectible item for an instant appraisal."
+        case .jewelry: return "Discover hidden value — get an estimate, materials breakdown, and eBay fair-price check."
+        case .coin:    return "Identify any coin — US, foreign, ancient, or commemorative."
+        }
+    }
+
+    private var modeRow: some View {
+        VStack(spacing: 10) {
+            HStack(spacing: 10) {
+                Text("Mode")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Button {
+                    showLanguagePicker = true
+                } label: {
+                    HStack(spacing: 6) {
+                        Text(SupportedLanguage.named(languageCode).flag)
+                        Text(languageCode)
+                            .font(.caption.weight(.bold))
+                        Image(systemName: "chevron.down")
+                            .font(.caption2)
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 7)
+                    .background(
+                        Capsule().fill(Color.white)
+                            .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 1)
+                    )
+                    .foregroundStyle(Color.brandInk)
+                }
+            }
+            .padding(.horizontal)
+
+            ModeChipPicker(selection: $storedMode)
+        }
     }
 
     private var header: some View {
         VStack(spacing: 8) {
-            Text(mode == .stamp ? "Scan & Identify Any Stamp" : "Accurate Antique Scanner")
+            Text(primaryTitle)
                 .font(.system(size: 28, weight: .bold, design: .rounded))
                 .multilineTextAlignment(.center)
-                .foregroundStyle(Color.brandInk)
-            Text(mode == .stamp
-                 ? "Point your camera at a stamp or pick one from your library."
-                 : "Scan any antique, vintage, or collectible item for an instant appraisal.")
+                .foregroundStyle(mode == .coin ? .white : Color.brandInk)
+            Text(primarySubtitle)
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(mode == .coin ? Color.white.opacity(0.7) : .secondary)
                 .multilineTextAlignment(.center)
         }
         .padding(.horizontal)
@@ -133,7 +167,7 @@ struct ScanView: View {
     private var scannerCard: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(Color.white)
+                .fill(mode == .coin ? Color.white.opacity(0.06) : Color.white)
                 .shadow(color: .black.opacity(0.06), radius: 14, x: 0, y: 6)
 
             if let image = capturedImage {
@@ -141,9 +175,9 @@ struct ScanView: View {
             } else {
                 ScannerFrame(color: mode.accentColor)
                     .overlay {
-                        Image(systemName: mode == .stamp ? "camera.viewfinder" : "sparkles.tv")
+                        Image(systemName: scannerIcon)
                             .font(.system(size: 56, weight: .light))
-                            .foregroundStyle(mode.accentColor.opacity(0.75))
+                            .foregroundStyle(mode.accentColor.opacity(0.85))
                     }
                     .padding(28)
             }
@@ -153,7 +187,7 @@ struct ScanView: View {
                     .fill(Color.black.opacity(0.35))
                 VStack(spacing: 12) {
                     ProgressView().tint(.white).scaleEffect(1.3)
-                    Text(mode == .stamp ? "Identifying stamp…" : "Identifying antique…")
+                    Text("Identifying \(mode.singular.lowercased())…")
                         .foregroundStyle(.white)
                         .font(.headline)
                 }
@@ -161,6 +195,15 @@ struct ScanView: View {
         }
         .frame(height: 360)
         .padding(.horizontal)
+    }
+
+    private var scannerIcon: String {
+        switch mode {
+        case .stamp:   return "camera.viewfinder"
+        case .antique: return "sparkles.tv"
+        case .jewelry: return "sparkles"
+        case .coin:    return "dollarsign.circle"
+        }
     }
 
     private var actionButtons: some View {
@@ -195,21 +238,35 @@ struct ScanView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Tips for accurate results")
                 .font(.headline)
-                .foregroundStyle(Color.brandInk)
-            tip(mode == .stamp
-                ? "Place the stamp on a plain, well-lit surface."
-                : "Photograph the antique against a neutral backdrop.")
-            tip(mode == .stamp
-                ? "Fill the frame, keeping the stamp parallel to the camera."
-                : "Capture key details: marks, signatures, construction.")
+                .foregroundStyle(mode == .coin ? .white : Color.brandInk)
+            tip(tip1)
+            tip(tip2)
             tip("Avoid glare — natural daylight works best.")
         }
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color.white.opacity(0.85))
+                .fill(mode == .coin ? Color.white.opacity(0.08) : Color.white.opacity(0.85))
         )
         .padding(.horizontal)
+    }
+
+    private var tip1: String {
+        switch mode {
+        case .stamp:   return "Place the stamp on a plain, well-lit surface."
+        case .antique: return "Photograph the antique against a neutral backdrop."
+        case .jewelry: return "Capture hallmarks and stone details close-up."
+        case .coin:    return "Photograph the obverse face with crisp focus."
+        }
+    }
+
+    private var tip2: String {
+        switch mode {
+        case .stamp:   return "Fill the frame, keeping the stamp parallel to the camera."
+        case .antique: return "Capture key details: marks, signatures, construction."
+        case .jewelry: return "Include metal stamp, prong / bezel detail, and the full piece."
+        case .coin:    return "Try to include both obverse and reverse if possible."
+        }
     }
 
     private func tip(_ text: String) -> some View {
@@ -217,7 +274,7 @@ struct ScanView: View {
             Image(systemName: "checkmark.seal.fill")
                 .foregroundStyle(mode.accentColor)
             Text(text)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(mode == .coin ? Color.white.opacity(0.8) : .secondary)
         }
         .font(.subheadline)
     }
@@ -247,6 +304,10 @@ struct ScanView: View {
                 identifiedStamp = try await stampIdentifier.identify(image: image)
             case .antique:
                 identifiedAntique = try await antiqueIdentifier.identify(image: image)
+            case .jewelry:
+                identifiedJewelry = try await jewelryIdentifier.identify(image: image)
+            case .coin:
+                identifiedCoin = try await coinIdentifier.identify(image: image)
             }
         } catch {
             errorMessage = error.localizedDescription
@@ -297,4 +358,6 @@ private struct ScannerFrame: View {
     ScanView()
         .environmentObject(StampStore())
         .environmentObject(AntiqueStore())
+        .environmentObject(JewelryStore())
+        .environmentObject(CoinStore())
 }
