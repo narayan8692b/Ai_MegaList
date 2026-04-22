@@ -3,7 +3,7 @@ import Combine
 
 final class ExchangeRateService: ObservableObject {
 
-    @Published var rates: [String: Double] = Self.fallbackRates
+    @Published var rates: [String: Double] = ExchangeRateService.fallbackRates
     @Published var isOnline = false
 
     // Rates relative to EUR — used when network unavailable
