@@ -46,13 +46,14 @@ struct CurrencySelectorView: View {
                     }
                 }
             }
-            .listStyle(.insetGrouped)
-            .searchable(text: $query, prompt: "Search currencies")
-            .navigationTitle("Select Currency")
+            .listStyle(.plain)
+            .searchable(text: $query, prompt: "Search...")
+            .navigationTitle("Select currency")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") { dismiss() }
+                        .fontWeight(.semibold)
                 }
             }
         }
@@ -62,11 +63,19 @@ struct CurrencySelectorView: View {
 
     @ViewBuilder
     private func sectionHeader(_ text: String) -> some View {
-        if text.isEmpty { EmptyView() } else { Text(text) }
+        if text.isEmpty {
+            EmptyView()
+        } else {
+            Text(text)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .foregroundColor(.primary)
+        }
     }
 
     private func row(for currency: Currency) -> some View {
         let isSelected = existingIds.contains(currency.id) || currency.id == currentId
+
         return Button {
             switch mode {
             case .singleSelect(_, let onSelect):
@@ -76,25 +85,44 @@ struct CurrencySelectorView: View {
                 onToggle(currency)
             }
         } label: {
-            HStack(spacing: 14) {
-                Text(currency.flag)
-                    .font(.system(size: 28))
-                    .frame(width: 36)
-                VStack(alignment: .leading, spacing: 1) {
+            HStack(spacing: 12) {
+
+                // Flag inside rounded square container
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color(.systemGray6))
+                        .frame(width: 42, height: 42)
+                    if currency.flag.isEmpty {
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color(.systemGray4), lineWidth: 1)
+                            .frame(width: 42, height: 42)
+                    }
+                    Text(currency.flag.isEmpty ? "🏳" : currency.flag)
+                        .font(.system(size: 26))
+                }
+
+                // Code + Name
+                VStack(alignment: .leading, spacing: 2) {
                     Text(currency.id)
                         .font(.caption)
                         .foregroundColor(.secondary)
                     Text(currency.name)
                         .font(.body)
+                        .foregroundColor(.primary)
                 }
+
                 Spacer()
+
+                // Checkmark (filled circle to match screenshot)
                 if isSelected {
-                    Image(systemName: "checkmark")
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.title3)
                         .foregroundColor(.blue)
-                        .fontWeight(.semibold)
                 }
             }
+            .padding(.vertical, 4)
+            .contentShape(Rectangle())
         }
-        .foregroundColor(.primary)
+        .buttonStyle(.plain)
     }
 }
