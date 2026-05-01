@@ -1,0 +1,439 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A1010001000000000000A001 /* ThreeDSnapApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010001000000000000A001 /* ThreeDSnapApp.swift */; };
+		A1010002000000000000A002 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010002000000000000A002 /* RootView.swift */; };
+		A1010003000000000000A003 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010003000000000000A003 /* HomeView.swift */; };
+		A1010004000000000000A004 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010004000000000000A004 /* LibraryView.swift */; };
+		A1010005000000000000A005 /* RoomScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010005000000000000A005 /* RoomScannerView.swift */; };
+		A1010006000000000000A006 /* MeasureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010006000000000000A006 /* MeasureView.swift */; };
+		A1010007000000000000A007 /* ScanDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010007000000000000A007 /* ScanDetailView.swift */; };
+		A1010008000000000000A008 /* ScanSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010008000000000000A008 /* ScanSceneView.swift */; };
+		A1010009000000000000A009 /* FloorPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2010009000000000000A009 /* FloorPlanView.swift */; };
+		A101000A000000000000A00A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A201000A000000000000A00A /* SettingsView.swift */; };
+		A101000B000000000000A00B /* Scan.swift in Sources */ = {isa = PBXBuildFile; fileRef = A201000B000000000000A00B /* Scan.swift */; };
+		A101000C000000000000A00C /* ScanStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A201000C000000000000A00C /* ScanStore.swift */; };
+		A101000D000000000000A00D /* RoomScannerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A201000D000000000000A00D /* RoomScannerCoordinator.swift */; };
+		A101000E000000000000A00E /* MeasureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A201000E000000000000A00E /* MeasureSession.swift */; };
+		A101000F000000000000A00F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A201000F000000000000A00F /* Assets.xcassets */; };
+		A1010010000000000000A010 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2010010000000000000A010 /* Preview Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A2010000000000000000A000 /* ThreeDSnap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThreeDSnap.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2010001000000000000A001 /* ThreeDSnapApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreeDSnapApp.swift; sourceTree = "<group>"; };
+		A2010002000000000000A002 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		A2010003000000000000A003 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A2010004000000000000A004 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
+		A2010005000000000000A005 /* RoomScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomScannerView.swift; sourceTree = "<group>"; };
+		A2010006000000000000A006 /* MeasureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureView.swift; sourceTree = "<group>"; };
+		A2010007000000000000A007 /* ScanDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanDetailView.swift; sourceTree = "<group>"; };
+		A2010008000000000000A008 /* ScanSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSceneView.swift; sourceTree = "<group>"; };
+		A2010009000000000000A009 /* FloorPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloorPlanView.swift; sourceTree = "<group>"; };
+		A201000A000000000000A00A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A201000B000000000000A00B /* Scan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scan.swift; sourceTree = "<group>"; };
+		A201000C000000000000A00C /* ScanStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanStore.swift; sourceTree = "<group>"; };
+		A201000D000000000000A00D /* RoomScannerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomScannerCoordinator.swift; sourceTree = "<group>"; };
+		A201000E000000000000A00E /* MeasureSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureSession.swift; sourceTree = "<group>"; };
+		A201000F000000000000A00F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A2010010000000000000A010 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		A2010011000000000000A011 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A3010000000000000000A000 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A4010000000000000000A000 = {
+			isa = PBXGroup;
+			children = (
+				A4010001000000000000A001 /* ThreeDSnap */,
+				A4010002000000000000A002 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A4010001000000000000A001 /* ThreeDSnap */ = {
+			isa = PBXGroup;
+			children = (
+				A2010001000000000000A001 /* ThreeDSnapApp.swift */,
+				A4010003000000000000A003 /* Views */,
+				A4010004000000000000A004 /* Models */,
+				A4010005000000000000A005 /* Persistence */,
+				A4010006000000000000A006 /* Scanner */,
+				A4010007000000000000A007 /* Resources */,
+				A4010008000000000000A008 /* Preview Content */,
+				A2010011000000000000A011 /* Info.plist */,
+			);
+			path = ThreeDSnap;
+			sourceTree = "<group>";
+		};
+		A4010002000000000000A002 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A2010000000000000000A000 /* ThreeDSnap.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A4010003000000000000A003 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A2010002000000000000A002 /* RootView.swift */,
+				A2010003000000000000A003 /* HomeView.swift */,
+				A2010004000000000000A004 /* LibraryView.swift */,
+				A2010005000000000000A005 /* RoomScannerView.swift */,
+				A2010006000000000000A006 /* MeasureView.swift */,
+				A2010007000000000000A007 /* ScanDetailView.swift */,
+				A2010008000000000000A008 /* ScanSceneView.swift */,
+				A2010009000000000000A009 /* FloorPlanView.swift */,
+				A201000A000000000000A00A /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A4010004000000000000A004 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A201000B000000000000A00B /* Scan.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A4010005000000000000A005 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				A201000C000000000000A00C /* ScanStore.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		A4010006000000000000A006 /* Scanner */ = {
+			isa = PBXGroup;
+			children = (
+				A201000D000000000000A00D /* RoomScannerCoordinator.swift */,
+				A201000E000000000000A00E /* MeasureSession.swift */,
+			);
+			path = Scanner;
+			sourceTree = "<group>";
+		};
+		A4010007000000000000A007 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A201000F000000000000A00F /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		A4010008000000000000A008 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				A2010010000000000000A010 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A5010000000000000000A000 /* ThreeDSnap */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A6010000000000000000A000 /* Build configuration list for PBXNativeTarget "ThreeDSnap" */;
+			buildPhases = (
+				A7010000000000000000A000 /* Sources */,
+				A3010000000000000000A000 /* Frameworks */,
+				A8010000000000000000A000 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ThreeDSnap;
+			productName = ThreeDSnap;
+			productReference = A2010000000000000000A000 /* ThreeDSnap.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A9010000000000000000A000 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					A5010000000000000000A000 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = AA010000000000000000A000 /* Build configuration list for PBXProject "ThreeDSnap" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A4010000000000000000A000;
+			productRefGroup = A4010002000000000000A002 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A5010000000000000000A000 /* ThreeDSnap */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A8010000000000000000A000 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1010010000000000000A010 /* Preview Assets.xcassets in Resources */,
+				A101000F000000000000A00F /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A7010000000000000000A000 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1010001000000000000A001 /* ThreeDSnapApp.swift in Sources */,
+				A1010002000000000000A002 /* RootView.swift in Sources */,
+				A1010003000000000000A003 /* HomeView.swift in Sources */,
+				A1010004000000000000A004 /* LibraryView.swift in Sources */,
+				A1010005000000000000A005 /* RoomScannerView.swift in Sources */,
+				A1010006000000000000A006 /* MeasureView.swift in Sources */,
+				A1010007000000000000A007 /* ScanDetailView.swift in Sources */,
+				A1010008000000000000A008 /* ScanSceneView.swift in Sources */,
+				A1010009000000000000A009 /* FloorPlanView.swift in Sources */,
+				A101000A000000000000A00A /* SettingsView.swift in Sources */,
+				A101000B000000000000A00B /* Scan.swift in Sources */,
+				A101000C000000000000A00C /* ScanStore.swift in Sources */,
+				A101000D000000000000A00D /* RoomScannerCoordinator.swift in Sources */,
+				A101000E000000000000A00E /* MeasureSession.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AB010000000000000000A000 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AB020000000000000000A000 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AC010000000000000000A000 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 100;
+				DEVELOPMENT_ASSET_PATHS = "\"ThreeDSnap/Preview Content/Preview Assets.xcassets\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ThreeDSnap/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.threedsnap;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AC020000000000000000A000 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 100;
+				DEVELOPMENT_ASSET_PATHS = "\"ThreeDSnap/Preview Content/Preview Assets.xcassets\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ThreeDSnap/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.threedsnap;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AA010000000000000000A000 /* Build configuration list for PBXProject "ThreeDSnap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB010000000000000000A000 /* Debug */,
+				AB020000000000000000A000 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A6010000000000000000A000 /* Build configuration list for PBXNativeTarget "ThreeDSnap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC010000000000000000A000 /* Debug */,
+				AC020000000000000000A000 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A9010000000000000000A000 /* Project object */;
+}
