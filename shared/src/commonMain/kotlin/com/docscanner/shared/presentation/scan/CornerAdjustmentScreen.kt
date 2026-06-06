@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Refresh
@@ -85,7 +86,14 @@ fun CornerAdjustmentScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(title = { Text("Adjust Corners") })
+            TopAppBar(
+                title = { Text("Adjust Corners") },
+                navigationIcon = {
+                    androidx.compose.material3.IconButton(onClick = onBack) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                },
+            )
         },
         bottomBar = {
             Row(
@@ -204,10 +212,10 @@ private fun CornerEditor(
                             onDragCancel = { activeHandle = null },
                             onDrag = { change, _ ->
                                 change.consume()
-                                val handle = activeHandle ?: return@detectDragGestures
-                                val pos = change.position
-                                activePoint = pos
-                                if (canvasSize.width > 0f && canvasSize.height > 0f) {
+                                val handle = activeHandle
+                                if (handle != null && canvasSize.width > 0f && canvasSize.height > 0f) {
+                                    val pos = change.position
+                                    activePoint = pos
                                     onMove(
                                         handle,
                                         pos.x / canvasSize.width,
