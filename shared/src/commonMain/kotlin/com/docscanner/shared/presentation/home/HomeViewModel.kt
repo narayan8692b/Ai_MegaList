@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.docscanner.shared.domain.model.Document
 import com.docscanner.shared.domain.usecase.GetDocumentsUseCase
 import com.docscanner.shared.domain.usecase.ToggleFavoriteUseCase
+import com.docscanner.shared.presentation.common.launchSafe
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
