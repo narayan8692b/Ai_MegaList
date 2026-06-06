@@ -57,8 +57,8 @@ class VisionOcrEngine : OcrEngine {
                         val results = completedRequest?.results ?: emptyList<Any?>()
                         cont.resume(DataResult.Success(parse(results)))
                     }
-                    request.setRecognitionLevel(VNRequestTextRecognitionLevelAccurate)
-                    request.setUsesLanguageCorrection(true)
+                    request.recognitionLevel = VNRequestTextRecognitionLevelAccurate
+                    request.usesLanguageCorrection = true
 
                     val handler = VNImageRequestHandler(cgImage, options = mapOf<Any?, Any?>())
                     val ok = handler.performRequests(listOf(request), error = null)
@@ -78,7 +78,7 @@ class VisionOcrEngine : OcrEngine {
         val sb = StringBuilder()
         for (obs in results) {
             val observation = obs as? VNRecognizedTextObservation ?: continue
-            val candidate = observation.topCandidates(1u).firstOrNull() as? VNRecognizedText ?: continue
+            val candidate = observation.topCandidates(1.toULong()).firstOrNull() as? VNRecognizedText ?: continue
             val text = candidate.string
             if (text.isEmpty()) continue
             if (sb.isNotEmpty()) sb.append('\n')

@@ -85,23 +85,27 @@ class IosSecureStorage : SecureStorage {
         nsData.toKString()
     }
 
-    override fun remove(key: String) = memScoped {
-        val query = makeDictionary(
-            kSecClass to kSecClassGenericPassword,
-            kSecAttrService to service.bridged(),
-            kSecAttrAccount to key.bridged(),
-        )
-        SecItemDelete(query)
-        CFBridgingRelease(query)
+    override fun remove(key: String) {
+        memScoped {
+            val query = makeDictionary(
+                kSecClass to kSecClassGenericPassword,
+                kSecAttrService to service.bridged(),
+                kSecAttrAccount to key.bridged(),
+            )
+            SecItemDelete(query)
+            CFBridgingRelease(query)
+        }
     }
 
-    override fun clear() = memScoped {
-        val query = makeDictionary(
-            kSecClass to kSecClassGenericPassword,
-            kSecAttrService to service.bridged(),
-        )
-        SecItemDelete(query)
-        CFBridgingRelease(query)
+    override fun clear() {
+        memScoped {
+            val query = makeDictionary(
+                kSecClass to kSecClassGenericPassword,
+                kSecAttrService to service.bridged(),
+            )
+            SecItemDelete(query)
+            CFBridgingRelease(query)
+        }
     }
 
     // --- interop helpers -------------------------------------------------
