@@ -1,0 +1,131 @@
+.library__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.library__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.library__search span {
+  position: absolute;
+  left: 14px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.library__search .input {
+  padding-left: 40px;
+}
+
+/* Reuse the responsive grid defined in home.css if loaded; redefine for standalone routes. */
+.doc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 600px) {
+  .doc-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .doc-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.library__section h2 {
+  margin-bottom: 8px;
+}
+
+/* Tag / filter chips. */
+.library__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  border: 1px solid var(--color-outline-variant);
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--motion-fast), border-color var(--motion-fast);
+}
+
+.chip.is-active {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  border-color: transparent;
+}
+
+/* Folders. */
+.folder-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 600px) {
+  .folder-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.folder-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--color-on-surface);
+  padding: 14px;
+}
+
+.folder-card__icon {
+  font-size: 1.4rem;
+}
+
+.folder-card__name {
+  flex: 1 1 auto;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Bottom-sheet menus. */
+.sheet-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.sheet-menu__item {
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--color-on-surface);
+  padding: 14px 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.sheet-menu__item:last-child {
+  border-bottom: none;
+}
+
+.sheet-menu__item--danger {
+  color: var(--color-error);
+}

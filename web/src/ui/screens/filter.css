@@ -1,0 +1,98 @@
+/* Filter selection + save screen. */
+.filter-screen {
+  position: fixed;
+  inset: 0;
+  background: #0a0a0a;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+}
+
+.filter-screen__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: calc(var(--safe-top) + 12px) calc(var(--safe-right) + 12px) 8px
+    calc(var(--safe-left) + 12px);
+}
+
+.filter-screen__topbtn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 4px;
+}
+
+.filter-screen__count {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.filter-screen__spacer {
+  width: 48px;
+}
+
+.filter-screen__preview {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+}
+
+.filter-screen__img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--elev-3);
+}
+
+.filter-screen__preview-busy {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+}
+
+.filter-screen__strip {
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Make filter labels legible on the dark scan background. */
+.filter-screen__strip .filter-strip__label {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.filter-screen__strip .filter-strip__item.is-selected .filter-strip__label {
+  color: var(--color-primary);
+}
+
+.filter-screen__title-field {
+  padding: 8px 16px 4px;
+}
+
+.filter-screen__error {
+  text-align: center;
+  color: var(--color-warning);
+  font-size: 0.85rem;
+  padding: 0 16px 4px;
+}
+
+.filter-screen__actions {
+  display: flex;
+  gap: 12px;
+  padding: 8px calc(var(--safe-right) + 16px) calc(var(--safe-bottom) + 18px)
+    calc(var(--safe-left) + 16px);
+}
+
+.filter-screen__save {
+  flex: 1 1 auto;
+}

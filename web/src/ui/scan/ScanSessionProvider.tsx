@@ -70,7 +70,7 @@ export function ScanSessionProvider({ children }: { children: ReactNode }) {
   const { settings } = useServices();
   const [title, setTitleState] = useState<string>(defaultTitle);
   const [pages, setPages] = useState<ScanPage[]>([]);
-  const [queue, setQueue] = useState<CapturedImage[]>([]);
+  const [, setQueue] = useState<CapturedImage[]>([]);
   const [active, setActive] = useState<CapturedImage | null>(null);
   const [corners, setCornersState] = useState<DocumentCorners>(FULL_CORNERS);
   const [filter, setFilterState] = useState<ScanFilter>(ScanFilter.MAGIC_COLOR);

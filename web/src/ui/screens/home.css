@@ -1,0 +1,81 @@
+.home__header h1 {
+  margin-top: 2px;
+}
+
+.home__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.home__search-icon {
+  position: absolute;
+  left: 14px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.home__search-input {
+  padding-left: 40px;
+}
+
+.home__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.home__action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 12px;
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform var(--motion-fast), box-shadow var(--motion-fast);
+}
+
+.home__action:active {
+  transform: scale(0.98);
+}
+
+.home__action--primary {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  border-color: transparent;
+}
+
+.home__action-icon {
+  font-size: 1.6rem;
+}
+
+.home__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+/* Shared responsive document grid. */
+.doc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 600px) {
+  .doc-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .doc-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

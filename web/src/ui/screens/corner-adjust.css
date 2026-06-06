@@ -1,0 +1,101 @@
+/* Corner-adjustment (signature) screen. */
+.corner-adjust {
+  position: fixed;
+  inset: 0;
+  background: #0a0a0a;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+}
+
+.corner-adjust__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: calc(var(--safe-top) + 12px) calc(var(--safe-right) + 12px) 12px
+    calc(var(--safe-left) + 12px);
+}
+
+.corner-adjust__topbtn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 4px;
+}
+
+.corner-adjust__title {
+  font-weight: 600;
+}
+
+.corner-adjust__spacer {
+  width: 48px;
+}
+
+.corner-adjust__stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0 8px;
+  touch-action: none;
+}
+
+.corner-adjust__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.corner-adjust__loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.corner-adjust__magnifier {
+  position: absolute;
+  width: 132px;
+  height: 132px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  box-shadow: var(--elev-3);
+  pointer-events: none;
+  z-index: 5;
+  background: #000;
+}
+
+.corner-adjust__error {
+  text-align: center;
+  color: var(--color-warning);
+  font-size: 0.85rem;
+  padding: 4px 16px;
+}
+
+.corner-adjust__tools {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 8px 16px;
+}
+
+.corner-adjust__tool {
+  color: #fff;
+}
+
+.corner-adjust__actions {
+  display: flex;
+  justify-content: center;
+  padding: 8px calc(var(--safe-right) + 16px) calc(var(--safe-bottom) + 20px)
+    calc(var(--safe-left) + 16px);
+}
+
+.corner-adjust__confirm {
+  min-width: 200px;
+}

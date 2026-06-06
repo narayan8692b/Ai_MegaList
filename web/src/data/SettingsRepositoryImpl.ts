@@ -46,7 +46,14 @@ async function derive(pin: string, salt: Uint8Array): Promise<string> {
     ['deriveBits'],
   );
   const bits = await crypto.subtle.deriveBits(
-    { name: 'PBKDF2', salt, iterations: PBKDF2_ITERATIONS, hash: 'SHA-256' },
+    {
+      name: 'PBKDF2',
+      // Cast: TS 5.7+ types Uint8Array as `Uint8Array<ArrayBufferLike>`, which is not
+      // structurally assignable to `BufferSource`; the runtime value is always ArrayBuffer-backed.
+      salt: salt as BufferSource,
+      iterations: PBKDF2_ITERATIONS,
+      hash: 'SHA-256',
+    },
     keyMaterial,
     HASH_BITS,
   );
