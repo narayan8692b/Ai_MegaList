@@ -1,0 +1,146 @@
+/* Full-screen camera capture screen. */
+.scan-capture {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 50;
+}
+
+.scan-capture__stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scan-capture__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+}
+
+.scan-capture__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.scan-capture__overlay--error p {
+  max-width: 28ch;
+}
+
+.scan-capture__frame {
+  position: absolute;
+  inset: 12% 8%;
+  border: 2px dashed rgba(255, 255, 255, 0.35);
+  border-radius: var(--radius-lg);
+  pointer-events: none;
+}
+
+.scan-capture__top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: calc(var(--safe-top) + 12px) calc(var(--safe-right) + 16px) 12px
+    calc(var(--safe-left) + 16px);
+}
+
+.scan-capture__topbtn {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scan-capture__count {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: var(--radius-full);
+  padding: 4px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.scan-capture__controls {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 20px calc(var(--safe-right) + 24px) calc(var(--safe-bottom) + 28px)
+    calc(var(--safe-left) + 24px);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
+}
+
+.scan-capture__gallery,
+.scan-capture__flip {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--motion-fast), background-color var(--motion-fast);
+}
+
+.scan-capture__gallery:active,
+.scan-capture__flip:active {
+  transform: scale(0.92);
+}
+
+.scan-capture__shutter {
+  width: 76px;
+  height: 76px;
+  border-radius: var(--radius-full);
+  border: 4px solid rgba(255, 255, 255, 0.85);
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform var(--motion-fast);
+}
+
+.scan-capture__shutter:active {
+  transform: scale(0.92);
+}
+
+.scan-capture__shutter:disabled {
+  opacity: 0.4;
+}
+
+.scan-capture__shutter-ring {
+  width: 58px;
+  height: 58px;
+  border-radius: var(--radius-full);
+  background: #fff;
+  transition: background-color var(--motion-fast);
+}
