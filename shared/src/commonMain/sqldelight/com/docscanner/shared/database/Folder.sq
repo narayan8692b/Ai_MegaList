@@ -1,0 +1,27 @@
+CREATE TABLE FolderEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    parentId TEXT,
+    color INTEGER,
+    createdAt INTEGER NOT NULL
+);
+
+CREATE INDEX folder_parent_idx ON FolderEntity(parentId);
+
+selectAll:
+SELECT FolderEntity.*, (SELECT COUNT(*) FROM DocumentEntity WHERE DocumentEntity.folderId = FolderEntity.id) AS documentCount
+FROM FolderEntity ORDER BY name ASC;
+
+selectByParent:
+SELECT FolderEntity.*, (SELECT COUNT(*) FROM DocumentEntity WHERE DocumentEntity.folderId = FolderEntity.id) AS documentCount
+FROM FolderEntity WHERE parentId = :parentId ORDER BY name ASC;
+
+insert:
+INSERT INTO FolderEntity(id, name, parentId, color, createdAt)
+VALUES (:id, :name, :parentId, :color, :createdAt);
+
+rename:
+UPDATE FolderEntity SET name = :name WHERE id = :id;
+
+deleteById:
+DELETE FROM FolderEntity WHERE id = :id;

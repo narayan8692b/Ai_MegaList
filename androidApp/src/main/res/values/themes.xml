@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Compose supplies its own Material3 theming; this Android theme only needs to be a
+      Compose-friendly, action-bar-less DayNight base. Theme.Material3.DayNight.NoActionBar
+      ships with the Material Components dependency pulled in transitively by Compose.
+    -->
+    <style name="Theme.DocScanner" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/window_background</item>
+    </style>
+</resources>

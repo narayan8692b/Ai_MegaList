@@ -1,0 +1,33 @@
+CREATE TABLE TagEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    color INTEGER
+);
+
+CREATE TABLE DocumentTagCrossRef (
+    documentId TEXT NOT NULL,
+    tagId TEXT NOT NULL,
+    PRIMARY KEY (documentId, tagId),
+    FOREIGN KEY (documentId) REFERENCES DocumentEntity(id) ON DELETE CASCADE,
+    FOREIGN KEY (tagId) REFERENCES TagEntity(id) ON DELETE CASCADE
+);
+
+selectAllTags:
+SELECT * FROM TagEntity ORDER BY name ASC;
+
+insertTag:
+INSERT OR REPLACE INTO TagEntity(id, name, color) VALUES (:id, :name, :color);
+
+deleteTag:
+DELETE FROM TagEntity WHERE id = :id;
+
+selectTagsForDocument:
+SELECT TagEntity.* FROM TagEntity
+INNER JOIN DocumentTagCrossRef ON TagEntity.id = DocumentTagCrossRef.tagId
+WHERE DocumentTagCrossRef.documentId = :documentId;
+
+insertCrossRef:
+INSERT OR IGNORE INTO DocumentTagCrossRef(documentId, tagId) VALUES (:documentId, :tagId);
+
+deleteCrossRefsForDocument:
+DELETE FROM DocumentTagCrossRef WHERE documentId = :documentId;

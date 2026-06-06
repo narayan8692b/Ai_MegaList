@@ -1,0 +1,60 @@
+CREATE TABLE DocumentEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    folderId TEXT,
+    ocrText TEXT NOT NULL DEFAULT '',
+    createdAt INTEGER NOT NULL,
+    updatedAt INTEGER NOT NULL,
+    isFavorite INTEGER NOT NULL DEFAULT 0,
+    isLocked INTEGER NOT NULL DEFAULT 0,
+    syncStatus TEXT NOT NULL DEFAULT 'LOCAL_ONLY',
+    FOREIGN KEY (folderId) REFERENCES FolderEntity(id) ON DELETE SET NULL
+);
+
+CREATE INDEX document_folder_idx ON DocumentEntity(folderId);
+CREATE INDEX document_updated_idx ON DocumentEntity(updatedAt);
+
+selectAll:
+SELECT * FROM DocumentEntity ORDER BY updatedAt DESC;
+
+selectByFolder:
+SELECT * FROM DocumentEntity WHERE folderId = :folderId ORDER BY updatedAt DESC;
+
+selectById:
+SELECT * FROM DocumentEntity WHERE id = :id;
+
+search:
+SELECT * FROM DocumentEntity
+WHERE title LIKE ('%' || :query || '%')
+   OR ocrText LIKE ('%' || :query || '%')
+ORDER BY updatedAt DESC;
+
+upsert:
+INSERT INTO DocumentEntity(id, title, folderId, ocrText, createdAt, updatedAt, isFavorite, isLocked, syncStatus)
+VALUES (:id, :title, :folderId, :ocrText, :createdAt, :updatedAt, :isFavorite, :isLocked, :syncStatus)
+ON CONFLICT(id) DO UPDATE SET
+    title = excluded.title,
+    folderId = excluded.folderId,
+    ocrText = excluded.ocrText,
+    updatedAt = excluded.updatedAt,
+    isFavorite = excluded.isFavorite,
+    isLocked = excluded.isLocked,
+    syncStatus = excluded.syncStatus;
+
+setFavorite:
+UPDATE DocumentEntity SET isFavorite = :favorite, updatedAt = :updatedAt WHERE id = :id;
+
+setLocked:
+UPDATE DocumentEntity SET isLocked = :locked, updatedAt = :updatedAt WHERE id = :id;
+
+moveToFolder:
+UPDATE DocumentEntity SET folderId = :folderId, updatedAt = :updatedAt WHERE id = :id;
+
+updateSyncStatus:
+UPDATE DocumentEntity SET syncStatus = :syncStatus WHERE id = :id;
+
+selectPendingSync:
+SELECT * FROM DocumentEntity WHERE syncStatus IN ('PENDING_UPLOAD', 'ERROR');
+
+deleteById:
+DELETE FROM DocumentEntity WHERE id = :id;

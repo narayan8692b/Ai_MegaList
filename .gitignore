@@ -1,0 +1,28 @@
+# Gradle
+.gradle/
+build/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDEA / Android Studio
+.idea/
+*.iml
+captures/
+.cxx/
+local.properties
+
+# Kotlin
+.kotlin/
+
+# macOS
+.DS_Store
+
+# iOS / Xcode
+iosApp/iosApp.xcodeproj/project.xcworkspace/
+iosApp/iosApp.xcodeproj/xcuserdata/
+iosApp/Pods/
+iosApp/build/
+*.xcuserstate
+
+# Misc
+*.log

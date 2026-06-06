@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Covers everything under the app's internal filesDir (originals/, processed/, exports/). -->
+    <files-path
+        name="internal_files"
+        path="." />
+    <!-- Covers cache dir, used for transient processed images. -->
+    <cache-path
+        name="internal_cache"
+        path="." />
+</paths>
