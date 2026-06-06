@@ -1,0 +1,4 @@
+// Project-wide configuration. Override TEAM_ID for signing in your local copy.
+TEAM_ID=
+BUNDLE_ID=com.docscanner.iosApp
+APP_NAME=DocScanner

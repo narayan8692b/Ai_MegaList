@@ -7,10 +7,13 @@ import com.docscanner.shared.domain.platform.FileStorage
 import com.docscanner.shared.domain.platform.ImageProcessor
 import com.docscanner.shared.domain.util.AppError
 import com.docscanner.shared.domain.util.DataResult
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import platform.CoreGraphics.CGPoint
+import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGSizeMake
 import platform.CoreImage.CIContext
 import platform.CoreImage.CIDetector
@@ -88,12 +91,13 @@ class IosImageProcessor(
             }
         }
 
-    private fun platform.CoreGraphics.CGPoint.toPointF(width: Double, height: Double): PointF {
-        val (px, py) = this.useContents { x to y }
-        val nx = (px / width).coerceIn(0.0, 1.0)
-        val ny = (1.0 - (py / height)).coerceIn(0.0, 1.0)
-        return PointF(nx.toFloat(), ny.toFloat())
-    }
+    private fun CValue<CGPoint>.toPointF(width: Double, height: Double): PointF =
+        useContents {
+            val nx = (x / width).coerceIn(0.0, 1.0)
+            // Flip Y: CoreImage bottom-left -> domain top-left.
+            val ny = (1.0 - (y / height)).coerceIn(0.0, 1.0)
+            PointF(nx.toFloat(), ny.toFloat())
+        }
 
     override suspend fun perspectiveCorrect(
         imagePath: String,
