@@ -24,7 +24,6 @@ import platform.CoreImage.CIFilter
 import platform.CoreImage.CIImage
 import platform.CoreImage.CIRectangleFeature
 import platform.CoreImage.CIVector
-import platform.CoreImage.filterWithName
 import platform.Foundation.NSData
 import platform.Foundation.NSNumber
 import platform.Foundation.numberWithFloat
@@ -209,9 +208,7 @@ class IosImageProcessor(
                 platform.UIKit.UIGraphicsBeginImageContextWithOptions(
                     CGSizeMake(targetW, targetH), false, 1.0,
                 )
-                image.drawInRect(
-                    platform.CoreGraphics.CGRectMake(0.0, 0.0, targetW, targetH),
-                )
+                image.drawInRect(CGRectMake(0.0, 0.0, targetW, targetH))
                 val thumb = platform.UIKit.UIGraphicsGetImageFromCurrentImageContext()
                 platform.UIKit.UIGraphicsEndImageContext()
 
