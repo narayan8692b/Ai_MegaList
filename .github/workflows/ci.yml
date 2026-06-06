@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-shared:
+    name: Build & test shared (KMP)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run shared unit tests
+        run: ./gradlew :shared:testDebugUnitTest --stacktrace
+
+      - name: Compile common (metadata) sources
+        run: ./gradlew :shared:compileKotlinMetadata --stacktrace
+
+      - name: Assemble Android app (debug)
+        run: ./gradlew :androidApp:assembleDebug --stacktrace
+
+      - name: Run Android app unit tests
+        run: ./gradlew :androidApp:testDebugUnitTest --stacktrace
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shared-test-reports
+          path: |
+            shared/build/reports/tests/
+            androidApp/build/reports/tests/
+          if-no-files-found: ignore
+
+  lint-android:
+    name: Android lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run Android lint
+        run: ./gradlew :androidApp:lintDebug --stacktrace
+
+      - name: Upload lint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-lint-report
+          path: androidApp/build/reports/lint-results-*.html
+          if-no-files-found: ignore
+
+  build-ios:
+    name: Compile iOS framework sources
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # Compiles the Kotlin/Native iOS sources for the simulator target. This validates the
+      # shared framework without needing a booted simulator. A full `xcodebuild` of iosApp
+      # additionally requires code-signing and is intentionally left out of CI.
+      - name: Compile iOS simulator (arm64) sources
+        run: ./gradlew :shared:compileKotlinIosSimulatorArm64 --stacktrace

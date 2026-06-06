@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  release-apk:
+    name: Build release APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # Produces an unsigned release APK. Signing config / secrets should be wired in here
+      # (e.g. via a keystore restored from repository secrets) before publishing to stores.
+      - name: Assemble release APK
+        run: ./gradlew :androidApp:assembleRelease --stacktrace
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docscanner-release-apk
+          path: androidApp/build/outputs/apk/release/*.apk
+          if-no-files-found: error

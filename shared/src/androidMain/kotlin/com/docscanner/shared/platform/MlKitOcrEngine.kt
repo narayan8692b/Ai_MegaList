@@ -71,7 +71,8 @@ class MlKitOcrEngine(private val context: Context) : OcrEngine {
                             OcrResult(
                                 fullText = text.text,
                                 blocks = blocks,
-                                languageCode = blocks.firstOrNull()?.let { null },
+                                // Latin recognizer does not expose a recognized language code.
+                                languageCode = null,
                             ),
                         ),
                     )

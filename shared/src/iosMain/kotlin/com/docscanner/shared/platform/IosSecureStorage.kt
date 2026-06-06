@@ -2,16 +2,17 @@ package com.docscanner.shared.platform
 
 import com.docscanner.shared.domain.platform.SecureStorage
 import kotlinx.cinterop.BetaInteropApi
-import kotlinx.cinterop.CValuesRef
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
+import platform.CoreFoundation.CFDictionaryCreate
 import platform.CoreFoundation.CFDictionaryRef
-import platform.CoreFoundation.CFStringRef
 import platform.CoreFoundation.CFTypeRefVar
 import platform.CoreFoundation.kCFBooleanTrue
+import platform.CoreFoundation.kCFTypeDictionaryKeyCallBacks
+import platform.CoreFoundation.kCFTypeDictionaryValueCallBacks
 import platform.Foundation.CFBridgingRelease
 import platform.Foundation.CFBridgingRetain
 import platform.Foundation.NSData
@@ -31,16 +32,19 @@ import platform.Security.kSecMatchLimit
 import platform.Security.kSecMatchLimitOne
 import platform.Security.kSecReturnData
 import platform.Security.kSecValueData
-import platform.darwin.OSStatus
+import kotlinx.cinterop.CValuesRef
+import kotlinx.cinterop.COpaquePointer
+import kotlinx.cinterop.cValuesOf
 
 /**
- * iOS [SecureStorage] backed by the Keychain (kSecClassGenericPassword items). Each key is
- * stored as a generic-password item with a fixed service identifier and the key as the
- * account. Values are UTF-8 encoded.
+ * iOS [SecureStorage] backed by the Keychain (kSecClassGenericPassword items). Each entry is
+ * stored under a fixed service identifier with the supplied key as the account; values are
+ * UTF-8 encoded.
  *
- * Interop notes: Keychain APIs take `CFDictionaryRef`. We build the query as an NSDictionary
- * and bridge it to CoreFoundation with [CFBridgingRetain] / release the result with
- * [CFBridgingRelease]. All CF/Security calls are wrapped in @OptIn(ExperimentalForeignApi).
+ * Interop notes: Keychain queries are CFDictionaries. We build them with [CFDictionaryCreate]
+ * passing the Security framework's CF string constants directly as keys (they are immortal CF
+ * singletons we must NOT release) and CF-bridged values. Bridged values created via
+ * [CFBridgingRetain] are released with [CFBridgingRelease] once the query is consumed.
  */
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 class IosSecureStorage : SecureStorage {
@@ -50,77 +54,102 @@ class IosSecureStorage : SecureStorage {
     override fun putString(key: String, value: String) {
         // Upsert semantics: delete any existing item, then add the new one.
         remove(key)
-        val data = value.toNSData()
-        val query = mapOf<Any?, Any?>(
-            bridge(kSecClass) to bridge(kSecClassGenericPassword),
-            bridge(kSecAttrService) to service,
-            bridge(kSecAttrAccount) to key,
-            bridge(kSecValueData) to data,
-        )
-        SecItemAdd(query.toCFDictionary(), null)
+        val data = CFBridgingRetain(value.toNSData())
+        try {
+            val query = buildQuery(
+                keys = listOf(kSecClass, kSecAttrService, kSecAttrAccount, kSecValueData),
+                values = listOf(
+                    kSecClassGenericPassword,
+                    CFBridgingRetain(service.toNSString()),
+                    CFBridgingRetain(key.toNSString()),
+                    data,
+                ),
+            )
+            SecItemAdd(query, null)
+            CFBridgingRelease(query as COpaquePointer?)
+        } finally {
+            CFBridgingRelease(data)
+        }
     }
 
     override fun getString(key: String): String? = memScoped {
-        val query = mapOf<Any?, Any?>(
-            bridge(kSecClass) to bridge(kSecClassGenericPassword),
-            bridge(kSecAttrService) to service,
-            bridge(kSecAttrAccount) to key,
-            bridge(kSecReturnData) to kCFBooleanTrue,
-            bridge(kSecMatchLimit) to bridge(kSecMatchLimitOne),
+        val query = buildQuery(
+            keys = listOf(kSecClass, kSecAttrService, kSecAttrAccount, kSecReturnData, kSecMatchLimit),
+            values = listOf(
+                kSecClassGenericPassword,
+                CFBridgingRetain(service.toNSString()),
+                CFBridgingRetain(key.toNSString()),
+                kCFBooleanTrue,
+                kSecMatchLimitOne,
+            ),
         )
         val result = alloc<CFTypeRefVar>()
-        val status: OSStatus = SecItemCopyMatching(query.toCFDictionary(), result.ptr)
+        val status = SecItemCopyMatching(query, result.ptr)
+        CFBridgingRelease(query as COpaquePointer?)
         if (status != errSecSuccess) return@memScoped null
-        // result now holds a retained CFDataRef bridged to NSData.
+        // result holds a retained CFDataRef; CFBridgingRelease transfers it to NSData (ARC).
         val nsData = CFBridgingRelease(result.value) as? NSData ?: return@memScoped null
         nsData.toKString()
     }
 
     override fun remove(key: String) {
-        val query = mapOf<Any?, Any?>(
-            bridge(kSecClass) to bridge(kSecClassGenericPassword),
-            bridge(kSecAttrService) to service,
-            bridge(kSecAttrAccount) to key,
+        val query = buildQuery(
+            keys = listOf(kSecClass, kSecAttrService, kSecAttrAccount),
+            values = listOf(
+                kSecClassGenericPassword,
+                CFBridgingRetain(service.toNSString()),
+                CFBridgingRetain(key.toNSString()),
+            ),
         )
-        SecItemDelete(query.toCFDictionary())
+        SecItemDelete(query)
+        CFBridgingRelease(query as COpaquePointer?)
     }
 
     override fun clear() {
-        // Delete all generic-password items for this service.
-        val query = mapOf<Any?, Any?>(
-            bridge(kSecClass) to bridge(kSecClassGenericPassword),
-            bridge(kSecAttrService) to service,
+        val query = buildQuery(
+            keys = listOf(kSecClass, kSecAttrService),
+            values = listOf(kSecClassGenericPassword, CFBridgingRetain(service.toNSString())),
         )
-        SecItemDelete(query.toCFDictionary())
+        SecItemDelete(query)
+        CFBridgingRelease(query as COpaquePointer?)
     }
 
     // --- interop helpers -------------------------------------------------
 
-    /** Bridge a CoreFoundation constant (CFStringRef) to an Objective-C object for the dict. */
-    private fun bridge(ref: CFStringRef?): Any? = CFBridgingRelease(ref?.let { CFBridgingRetainNoOp(it) })
-
     /**
-     * The Security framework constants are already +1 retained CF singletons; we must NOT
-     * release them. We simply reinterpret them as Objective-C ids for the NSDictionary keys
-     * by bridging without transferring ownership.
+     * Build a CFDictionary from parallel [keys]/[values] lists of CF references. The returned
+     * dictionary is +1 retained; callers release it with [CFBridgingRelease] after use.
      */
-    @Suppress("UNCHECKED_CAST")
-    private fun CFBridgingRetainNoOp(ref: CFStringRef): CFStringRef = ref
+    private fun buildQuery(
+        keys: List<COpaquePointer?>,
+        values: List<COpaquePointer?>,
+    ): CFDictionaryRef? = memScoped {
+        require(keys.size == values.size)
+        val keyArray = allocArrayOfPointers(keys)
+        val valueArray = allocArrayOfPointers(values)
+        CFDictionaryCreate(
+            allocator = null,
+            keys = keyArray,
+            values = valueArray,
+            numValues = keys.size.toLong(),
+            keyCallBacks = kCFTypeDictionaryKeyCallBacks.ptr,
+            valueCallBacks = kCFTypeDictionaryValueCallBacks.ptr,
+        )
+    }
+
+    private fun kotlinx.cinterop.MemScope.allocArrayOfPointers(
+        items: List<COpaquePointer?>,
+    ): CValuesRef<COpaquePointerVar> {
+        val array = allocArray<COpaquePointerVar>(items.size)
+        items.forEachIndexed { index, ptr -> array[index] = ptr }
+        return array
+    }
 
     private fun String.toNSData(): NSData =
         (this as NSString).dataUsingEncoding(NSUTF8StringEncoding)!!
 
+    private fun String.toNSString(): NSString = this as NSString
+
     private fun NSData.toKString(): String? =
         NSString.create(this, NSUTF8StringEncoding) as String?
-
-    @Suppress("UNCHECKED_CAST")
-    private fun Map<Any?, Any?>.toCFDictionary(): CValuesRef<CFDictionaryRef>? {
-        // Build an NSDictionary then bridge to CFDictionaryRef. NSDictionary <-> CFDictionary
-        // are toll-free bridged, so the cast is valid.
-        val nsDict = platform.Foundation.NSMutableDictionary()
-        for ((k, v) in this) {
-            if (k != null && v != null) nsDict.setObject(v, forKey = k as platform.darwin.NSObjectProtocol)
-        }
-        return CFBridgingRetain(nsDict) as CValuesRef<CFDictionaryRef>?
-    }
 }
