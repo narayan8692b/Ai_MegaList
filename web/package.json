@@ -1,0 +1,33 @@
+{
+  "name": "docscanner-pwa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DocScanner — a CamScanner-style document scanner Progressive Web App",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "idb": "^8.0.0",
+    "jspdf": "^2.5.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "tesseract.js": "^5.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.15.0",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.1",
+    "vite-plugin-pwa": "^0.21.1"
+  }
+}

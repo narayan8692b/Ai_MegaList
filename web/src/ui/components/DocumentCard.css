@@ -1,0 +1,90 @@
+.doc-card {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.doc-card__thumb-link {
+  display: block;
+}
+
+.doc-card__thumb {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background: var(--color-surface-variant);
+  overflow: hidden;
+}
+
+.doc-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.doc-card__badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 0.85rem;
+}
+
+.doc-card__pages {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: var(--color-scrim);
+  color: #fff;
+  border-radius: var(--radius-full);
+  padding: 1px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.doc-card__meta {
+  padding: 8px 10px 10px;
+}
+
+.doc-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.doc-card__title {
+  flex: 1 1 auto;
+  color: var(--color-on-surface);
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-card__fav {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: var(--color-warning);
+  line-height: 1;
+  padding: 2px;
+}
+
+.doc-card__sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  margin-top: 2px;
+}
+
+.doc-card__menu {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--color-on-surface-variant);
+  line-height: 1;
+  padding: 0 4px;
+}
